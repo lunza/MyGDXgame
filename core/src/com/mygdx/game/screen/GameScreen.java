@@ -157,37 +157,40 @@ public class GameScreen extends ScreenAdapter {
 		
 	
 		
-		if(carol.isOver()) {
+		if(carol.isOver()&&!zeta.isOver()) {
 			carol.setPosition(0, 0);
 			
 			SequenceAction sequence1 = 
 					Actions.sequence(Actions.moveTo(100, 0, 0.3F)
 							, Actions.moveTo(120, 0, 0.3F));
-			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
-			carol.addAction(repeatAction1);
+			
+			carol.addAction(sequence1);
+			carol.setZIndex(5);
 			carolMoved = true;
 			
 		}else if(!carol.isOver()&&carolMoved) {
 			
-			carol.setPosition(120, 0);
+			//carol.setPosition(120, 0);
 			
 			SequenceAction sequence1 = 
 					Actions.sequence(Actions.moveTo(20, 0, 0.3F)
 							, Actions.moveTo(0, 0, 0.3F));
-			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
-			carol.addAction(repeatAction1);
+		
+			carol.addAction(sequence1);
+			carol.setZIndex(4);
 			carolMoved = false;
 		}
 		
 		
-		if(zeta.isOver()) {
-			zeta.setPosition(400, 0);
+		if(zeta.isOver()&&!carol.isOver()) {
+			zeta.setPosition(500, 0);
 			
 			SequenceAction sequence1 = 
 					Actions.sequence(Actions.moveTo(300, 0, 0.3F)
 							, Actions.moveTo(280, 0, 0.3F));
 			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
 			zeta.addAction(repeatAction1);
+			zeta.setZIndex(5);
 			zetaMoved = true;
 			
 		}else if(!zeta.isOver()&&zetaMoved) {
@@ -199,6 +202,7 @@ public class GameScreen extends ScreenAdapter {
 							, Actions.moveTo(400, 0, 0.3F));
 			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
 			zeta.addAction(repeatAction1);
+			zeta.setZIndex(4);
 			zetaMoved = false;
 		}
 		

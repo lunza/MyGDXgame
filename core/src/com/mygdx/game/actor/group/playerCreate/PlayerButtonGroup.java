@@ -38,7 +38,8 @@ public class PlayerButtonGroup extends BaseGroup{
 		carol =new Carol(c_selected, c_unselect, 0, 0, "Carol", mainGame);
 		zeta = new Zeta(z_selected, z_unselect, 400, 0, "Zeta", mainGame);
 		
-		
+		carol.setSize(300, 450);
+		zeta.setSize(300, 450);
 
 		carol.addListener(new ClickListener() {
 			@Override
