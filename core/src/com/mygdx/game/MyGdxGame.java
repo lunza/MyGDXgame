@@ -63,6 +63,11 @@ public class MyGdxGame extends Game {
 		assetManager.load(Res.AtlasNames.Button_UP, Texture.class);
 		assetManager.load(Res.AtlasNames.LOGO, Texture.class);
 		assetManager.load(Res.AtlasNames.ARROW_RIGHT, Texture.class);
+		
+		assetManager.load(Res.AtlasNames.CAROl_SELECTED, Texture.class);
+		assetManager.load(Res.AtlasNames.CAROl_UNSELECT, Texture.class);
+		assetManager.load(Res.AtlasNames.ZETA_SELECTED, Texture.class);
+		assetManager.load(Res.AtlasNames.ZETA_UNSELECT, Texture.class);
 		//加载字体
 		assetManager.load(Res.BITMAP_FONT_PATH, BitmapFont.class);
 		//加载音效（暂无）

@@ -12,6 +12,7 @@ import com.mygdx.game.res.Res;
 
 public class BaseButton extends Button{
     
+	 private MyGdxGame mainGame;
     
     private ButtonStyle buttonStyle;
 
@@ -30,5 +31,18 @@ public class BaseButton extends Button{
         
 	
 	}
+
+	public BaseButton() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public MyGdxGame getMainGame() {
+		return mainGame;
+	}
+
+	public void setMainGame(MyGdxGame mainGame) {
+		this.mainGame = mainGame;
+	}
     
+	
 }

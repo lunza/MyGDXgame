@@ -4,11 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.actor.group.playerCreate.PlayerButtonGroup;
 import com.mygdx.game.actor.group.welcome.SystemButtonGroup;
-import com.mygdx.game.res.Res;
 import com.mygdx.game.stage.PlayerCreateStage;
 import com.mygdx.game.stage.WelcomeStage;
 
@@ -24,10 +27,14 @@ public class GameScreen extends ScreenAdapter {
 	private MyGdxGame mainGame;
 
 	/** 1. 主游戏舞台 */
-	private static WelcomeStage gameStage;
+	private static WelcomeStage welcomeStage;
 
 	/** 2.其他舞台 */
 	private static PlayerCreateStage playerCreateStage;
+	
+	
+	boolean carolMoved = false;
+	boolean zetaMoved = false;
 
 	public GameScreen(MyGdxGame mainGame) {
 		this.mainGame = mainGame;
@@ -36,7 +43,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private void init() {
 		// 1. 创建主游戏舞台
-		gameStage = new WelcomeStage(mainGame,
+		welcomeStage = new WelcomeStage(mainGame,
 				new StretchViewport(mainGame.getWorldWidth(), mainGame.getWorldHeight()));
 		playerCreateStage = new PlayerCreateStage(mainGame,
 				new StretchViewport(mainGame.getWorldWidth(), mainGame.getWorldHeight()));
@@ -44,7 +51,7 @@ public class GameScreen extends ScreenAdapter {
 		playerCreateStage.setVisible(false); // 除主游戏舞台外, 其他舞台先设置为不可见
 
 		// 把输入处理设置到主游戏舞台（必须设置, 否则无法接收用户输入）
-		Gdx.input.setInputProcessor(gameStage);
+		Gdx.input.setInputProcessor(welcomeStage);
 	}
 
 	/**
@@ -59,19 +66,20 @@ public class GameScreen extends ScreenAdapter {
 	 */
 	public static void setShowPlayerCreateStage(boolean showPlayerCreateStage) {
 		playerCreateStage.setVisible(showPlayerCreateStage);
+		welcomeStage.setVisible(!showPlayerCreateStage);
 		if (playerCreateStage.isVisible()) {
 			// 如果显示帮助舞台, 则把输入处理设置到帮助舞台
 			Gdx.input.setInputProcessor(playerCreateStage);
 		} else {
 			// 不显示帮助舞台, 把输入处理设置回主游戏舞台
-			Gdx.input.setInputProcessor(gameStage);
+			Gdx.input.setInputProcessor(welcomeStage);
 		}
 	}
 
 	@Override
 	public void render(float delta) {
 		// 使用背景颜色清屏
-		Gdx.gl.glClearColor(Res.BG_RGBA.r, Res.BG_RGBA.g, Res.BG_RGBA.b, Res.BG_RGBA.a);
+		Gdx.gl.glClearColor(0.75F, 1, 0.98F, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		/*
@@ -79,24 +87,39 @@ public class GameScreen extends ScreenAdapter {
 		 */
 
 		// 1. 主游戏舞台始终都需要绘制, 并且最先绘制
-		gameStage.act();
+		if(welcomeStage.isVisible()) {
+			welcomeStage.act();
+			welcomeStage.draw();
+			changeArrow();
+		}
 
-		gameStage.draw();
+		//2. 根据可视状态绘制第二舞台
+		if (playerCreateStage.isVisible()) {
+			playerCreateStage.act();
+			playerCreateStage.draw();
+			changePlayer();
+		}
 
-		changeArrow();
 	}
 
 	@Override
 	public void dispose() {
 		// 场景销毁时, 同时销毁所有舞台
-		if (gameStage != null) {
-			gameStage.dispose();
+		if (welcomeStage != null) {
+			welcomeStage.dispose();
+		}
+		if (playerCreateStage != null) {
+			playerCreateStage.dispose();
 		}
 
 	}
 
 	public WelcomeStage getGameStage() {
-		return gameStage;
+		return welcomeStage;
+	}
+	
+	public PlayerCreateStage getPlayerCreateStage() {
+		return playerCreateStage;
 	}
 
 	private void changeArrow() {
@@ -124,6 +147,61 @@ public class GameScreen extends ScreenAdapter {
 			arrow3.setVisible(true);
 
 		}
+	}
+	
+	
+	private void changePlayer() {
+		
+		Button carol = PlayerButtonGroup.carol;
+		Button zeta = PlayerButtonGroup.zeta;
+		
+	
+		
+		if(carol.isOver()) {
+			carol.setPosition(0, 0);
+			
+			SequenceAction sequence1 = 
+					Actions.sequence(Actions.moveTo(100, 0, 0.3F)
+							, Actions.moveTo(120, 0, 0.3F));
+			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
+			carol.addAction(repeatAction1);
+			carolMoved = true;
+			
+		}else if(!carol.isOver()&&carolMoved) {
+			
+			carol.setPosition(120, 0);
+			
+			SequenceAction sequence1 = 
+					Actions.sequence(Actions.moveTo(20, 0, 0.3F)
+							, Actions.moveTo(0, 0, 0.3F));
+			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
+			carol.addAction(repeatAction1);
+			carolMoved = false;
+		}
+		
+		
+		if(zeta.isOver()) {
+			zeta.setPosition(400, 0);
+			
+			SequenceAction sequence1 = 
+					Actions.sequence(Actions.moveTo(300, 0, 0.3F)
+							, Actions.moveTo(280, 0, 0.3F));
+			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
+			zeta.addAction(repeatAction1);
+			zetaMoved = true;
+			
+		}else if(!zeta.isOver()&&zetaMoved) {
+			
+			zeta.setPosition(280, 0);
+			
+			SequenceAction sequence1 = 
+					Actions.sequence(Actions.moveTo(300, 0, 0.3F)
+							, Actions.moveTo(400, 0, 0.3F));
+			RepeatAction repeatAction1 = Actions.repeat(1, sequence1);
+			zeta.addAction(repeatAction1);
+			zetaMoved = false;
+		}
+		
 	}
 
 }
